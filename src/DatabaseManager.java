@@ -6,15 +6,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 
-import java.util.HashMap;
-
+import java.util.TreeMap;
 
 public class DatabaseManager {
-	
-	public DatabaseManager()
-	{
-		
+
+	public DatabaseManager() {
+
 	}
+
 	private static DatabaseManager instance;
 
 	public DatabaseManager getInstance() {
@@ -38,33 +37,63 @@ public class DatabaseManager {
 		}
 	}
 
-	public void insertTradeValues(final Connection connection, String aktie, LocalDate date, boolean flag, int number,
+	public void insertTradeValues(final Connection connection, String aktie, LocalDate date, boolean flag, double amount,
 			double depotkonto) {
 		String createTable = "create table if not exists " + aktie
-				+ "200strategy (Datum varchar(10), aktie varchar(10), flag boolean, number int, depotkonto varchar(10));";
+				+ "200strategy (Datum varchar(10), aktie varchar(10), flag boolean, amount decimal(10,2), depotkonto decimal(10,2), PRIMARY KEY(Datum));";
 		try (PreparedStatement statement = connection.prepareStatement(createTable)) {
 			statement.execute(createTable);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		String insertInto = "insert into " + aktie
-				+ "200strategy (Datum, aktie, flag, number, depotkonto) values (?,?,?,?,?)";
+		String insertInto = "Replace into " + aktie
+				+ "200strategy (Datum, aktie, flag, amount, depotkonto) values (?,?,?,?,?);";
 		try (PreparedStatement statement = connection.prepareStatement(insertInto)) {
 			statement.setString(1, date.toString());
 			statement.setString(2, aktie);
 			statement.setBoolean(3, flag);
-			statement.setInt(4, number);
+			statement.setDouble(4, amount);
 			statement.setDouble(5, depotkonto);
+			statement.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
+	
+	public void selectFirstLast(Connection connection, String aktie, double startClose, double endClose, LocalDate startDate)
+	{
+		String selectStartClose = "Select closeSplit from "+aktie+" where datum >= '"+startDate+"' order by datum asc LIMIT 1";
+		
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(selectStartClose);
 
-	public void getDatabaseData(final Connection connection, String aktie, HashMap<LocalDate, Double> stockData,
-			HashMap<LocalDate, Double> avgStockData) {
-		String selectForm = "Select datum, closeSplit from " + aktie + " order by datum asc";
-		String selectAvgForm = "Select datum, closeSplit from " + aktie + "AVG order by datum asc";
+			while (rs.next()) {
+				startClose = rs.getDouble("closeSplit");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		String selectEndClose = "Select closeSplit from "+aktie+" where datum >= '"+startDate+"' order by datum desc LIMIT 1";
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(selectEndClose);
+
+			while (rs.next()) {
+				endClose = rs.getDouble("closeSplit");
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+	}
+
+	public void getDatabaseData(final Connection connection, String aktie, TreeMap<LocalDate, Double> stockData,
+			TreeMap<LocalDate, Double> avgStockData,LocalDate startDate) {
+		String selectForm = "Select datum, closeSplit from " + aktie+" where datum >= '"+startDate+"'";
+		String selectAvgForm = "Select datum, avg from " + aktie + "AVG where datum >= '"+startDate+"'";
 
 		try {
 			Statement stmt = connection.createStatement();
@@ -73,11 +102,14 @@ public class DatabaseManager {
 			while (rs.next()) {
 				stockData.put(LocalDate.parse(rs.getString("Datum")), rs.getDouble("closeSplit"));
 			}
-			
-			rs = stmt.executeQuery(selectAvgForm);
-			
-			while(rs.next())
-			{
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(selectAvgForm);
+
+			while (rs.next()) {
 				avgStockData.put(LocalDate.parse(rs.getString("Datum")), rs.getDouble("AVG"));
 			}
 		} catch (Exception e) {
