@@ -1,6 +1,5 @@
 import java.sql.Connection;
 import java.time.LocalDate;
-import java.util.TreeMap;
 public class buyAndHoldStrategy {
 
 	public buyAndHoldStrategy() {
@@ -9,13 +8,14 @@ public class buyAndHoldStrategy {
 	
 	DatabaseManager database = new DatabaseManager();
 	
-		public void buyHoldStrategy(final Connection connection, String aktie, LocalDate date, double depotkonto, double amount)
+		public void buyHoldStrategy(final Connection connection, String aktie, LocalDate date, double depotkonto, 
+				double amount,double startClose, double endClose)
 		{
-			double startClose = 0,endClose = 0;
-			database.selectFirstLast(connection, aktie, startClose, endClose, date);
+			double startKonto = depotkonto;
 			amount = depotkonto/startClose;
 			depotkonto = depotkonto-(amount * startClose);
 			depotkonto = amount * endClose;
-			System.out.println(depotkonto);
+			database.insertBuyHold(connection, aktie, date, depotkonto,startKonto);
 		}
+		
 }
