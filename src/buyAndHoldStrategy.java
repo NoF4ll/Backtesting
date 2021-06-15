@@ -1,8 +1,8 @@
 import java.sql.Connection;
 import java.time.LocalDate;
-public class buyAndHoldStrategy {
+public class BuyAndHoldStrategy {
 
-	public buyAndHoldStrategy() {
+	public BuyAndHoldStrategy() {
 
 	}
 	
@@ -15,6 +15,7 @@ public class buyAndHoldStrategy {
 			amount = depotkonto/startClose;
 			depotkonto = depotkonto-(amount * startClose);
 			depotkonto = amount * endClose;
+			System.out.println("Strategie : BuyAndHold  Aktie : "+aktie+" Startkapital: "+Math.round(startKonto)+" Euro Startdatum: "+date+" Endkonto: "+Math.round(depotkonto)+" Euro");
 			database.insertBuyHold(connection, aktie, date, depotkonto,startKonto);
 		}
 		
