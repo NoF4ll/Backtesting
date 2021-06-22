@@ -34,15 +34,13 @@ public class BacktestingMain {
 		System.out.println(config.getUser());
 		
 		
-		System.out.println(user+password+startDate+depotkonto);
-		
 		final double depotkonto = 10000;
 		//Scanner sc = new Scanner(System.in);
 		//System.out.println("Wählen sie ein StartDatum");
 		//String startDate = sc.next();
 		boolean flag = false;
 		try {
-			final Connection connection = database.getInstance().getDatabaseConnection(3306, "aktien");
+			final Connection connection = database.getInstance().getDatabaseConnection(3306, "aktien",config.getUser(),config.getPassword());
 			Scanner fileReader = new Scanner(file);
 			while (fileReader.hasNextLine()) {
 				

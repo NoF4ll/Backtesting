@@ -2,12 +2,13 @@ import java.io.FileInputStream;
 import java.time.LocalDate;
 import java.util.Properties;
 
+
 public class ConfigFileManager<Propertie> {
 
 	private String user;
 	private String password;
 	private LocalDate date;
-	private int depotkonto;
+	private double depotkonto;
 	
 	public ConfigFileManager() {
 		this.readConfigFile();
@@ -25,7 +26,7 @@ public class ConfigFileManager<Propertie> {
 		return date;
 	}
 
-	public int getDepotkonto() {
+	public double getDepotkonto() {
 		return depotkonto;
 	}
 
@@ -40,9 +41,7 @@ public class ConfigFileManager<Propertie> {
 			this.user = prop.getProperty("user");
 			this.password = prop.getProperty("password");
 			this.date = LocalDate.parse(prop.getProperty("startDate"));
-			this.depotkonto = Integer.parseInt(prop.getProperty("depotkonto"));
-			
-			System.out.println(user+password+date+depotkonto);
+			this.depotkonto = Double.valueOf((prop.getProperty("depotkonto")));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

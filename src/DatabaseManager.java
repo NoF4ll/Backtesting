@@ -10,7 +10,7 @@ import java.util.TreeMap;
 
 public class DatabaseManager {
 
-	// buyAndHoldStrategy buyHold = new buyAndHoldStrategy();
+	
 
 	public DatabaseManager() {
 
@@ -26,11 +26,13 @@ public class DatabaseManager {
 		return instance;
 	}
 
-	public Connection getDatabaseConnection(final int port, final String database) throws SQLException {
+	public Connection getDatabaseConnection(final int port, final String database,String user, String password) throws SQLException {
 		System.out.println(String.format("[mysql]: Connecting to MySQL:%s - %s", port, database));
+		
 		return DriverManager.getConnection(
-				String.format("jdbc:mysql://localhost:%s/%s?serverTimezone=UTC&useSSL=false", port, database), "root",
-				"bichl601");
+				String.format("jdbc:mysql://localhost:%s/%s?serverTimezone=UTC&useSSL=false", port, database), user,
+				password);
+		
 	}
 
 	public void releaseConnection(final Connection connection) throws SQLException {
