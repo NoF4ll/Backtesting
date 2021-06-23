@@ -1,6 +1,8 @@
 import java.io.FileInputStream;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Properties;
+
 
 
 public class ConfigFileManager<Propertie> {
@@ -9,7 +11,12 @@ public class ConfigFileManager<Propertie> {
 	private String password;
 	private LocalDate date;
 	private double depotkonto;
+	private ArrayList<String> aktien = new ArrayList<String>();;
 	
+	public ArrayList<String> getAktien() {
+		return aktien;
+	}
+
 	public ConfigFileManager() {
 		this.readConfigFile();
 	}
@@ -42,6 +49,15 @@ public class ConfigFileManager<Propertie> {
 			this.password = prop.getProperty("password");
 			this.date = LocalDate.parse(prop.getProperty("startDate"));
 			this.depotkonto = Double.valueOf((prop.getProperty("depotkonto")));
+			
+			int i = 1;
+			
+			while(prop.getProperty("aktie"+i)!=null)
+			{
+				this.aktien.add(prop.getProperty("aktie"+i));
+				i++;
+			}
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

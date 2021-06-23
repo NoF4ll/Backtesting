@@ -11,7 +11,7 @@ public class TwoHundredStrategy {
 	DatabaseManager database = new DatabaseManager();
 
 	public void twoHoundretStrategy(Connection connection, TreeMap<LocalDate, Double> stockData,
-			TreeMap<LocalDate, Double> avgStockData, String aktie, double amount, double depotkonto, boolean flag) {
+			TreeMap<LocalDate, Double> avgStockData, String aktie, double amount, double depotkonto, boolean flag,LocalDate date) {
 
 		double lastCloseValue = 0;
 		double startKapital = depotkonto;
@@ -43,11 +43,11 @@ public class TwoHundredStrategy {
 			
 			database.insertTradeValues(connection, aktie, lastDay, !flag, 0, depotkonto);
 		}
-		System.out.println("\nStrategie: 200er  | Aktie : "+aktie+" Startkapital: "+Math.round(startKapital)+" Euro Startdatum: "+lastDay+" Endkapital: "+Math.round(depotkonto)+" Euro");
+		System.out.println("\nStrategie: 200er  | Aktie : "+aktie+" Startkapital: "+Math.round(startKapital)+" Euro Startdatum: "+date+" Endkapital: "+Math.round(depotkonto)+" Euro");
 	}
 	
 	public void twoHoundretStrategyOptimize(Connection connection, TreeMap<LocalDate, Double> stockData,
-			TreeMap<LocalDate, Double> avgStockData, String aktie, double amount, double depotkonto, boolean flag) {
+			TreeMap<LocalDate, Double> avgStockData, String aktie, double amount, double depotkonto, boolean flag,LocalDate date) {
 
 		double lastCloseValue = 0;
 		double startKapital = depotkonto;
@@ -74,7 +74,7 @@ public class TwoHundredStrategy {
 			depotkonto = depotkonto + lastCloseValue * amount;
 			database.insertTradeValuesOptimize(connection, aktie, lastDay, flag, 0, depotkonto);
 		}
-		System.out.println("Strategie : 200erOptimiert  | Aktie : "+aktie+" Startkapital: "+Math.round(startKapital)+" Euro Startdatum: "+lastDay+" Endkapital: "+Math.round(depotkonto)+" Euro");
+		System.out.println("Strategie : 200erOptimiert  | Aktie : "+aktie+" Startkapital: "+Math.round(startKapital)+" Euro Startdatum: "+date+" Endkapital: "+Math.round(depotkonto)+" Euro");
 	}
 	
 }
